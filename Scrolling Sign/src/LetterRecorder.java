@@ -22,10 +22,10 @@ public class LetterRecorder {
 	private void init() throws IOException {
 		JFrame f = new JFrame("Letter Recorder");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		f.setBounds(50, 50, 600, 600);
+		f.setLocation(50, 50);
 
 		int gridSize, squareSize;
-		Grid g = new Grid(gridSize = 11, squareSize = 50);
+		Grid g = new Grid(gridSize = 10, squareSize = 50);
 		g.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -89,12 +89,8 @@ public class LetterRecorder {
 						txt += ".txt";
 					}
 
-					BufferedReader br = new BufferedReader(new FileReader("letters/" + txt));
-					String dmp = br.readLine();
-					g.setGrid(g.parseCoordDump(dmp));
+					g.setGrid(Grid.readGrid("letters/" + txt));
 					f.pack(); //Resizes the window to fit the incoming grid size
-					
-					br.close();
 				} catch (IOException e) {
 					System.err.println("File " + txt + " not found");
 				}

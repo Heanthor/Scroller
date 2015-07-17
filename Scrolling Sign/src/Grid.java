@@ -2,6 +2,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.JComponent;
 
@@ -168,33 +171,7 @@ public class Grid extends JComponent {
 		return toReturn;
 	}
 
-	/**
-	 * Parse the grid layout saved by coordDump() into a Color array that represents the grid.
-	 * @param s The parsed string
-	 * @return A Color array to be used to set a Grid.
-	 */
-	public Color[][] parseCoordDump(String s) {
-		int size = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf("|")));
-		Color[][] toReturn = new Color[size][size];
 
-		//initialize
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				toReturn[i][j] = Color.WHITE;
-			}
-		}
-
-		do {
-			String point = s.substring(s.indexOf("(") + 1, s.indexOf(")")); //x,y
-			int x = Integer.parseInt(point.substring(0, point.indexOf(",")));
-			int y = Integer.parseInt(point.substring(point.indexOf(",") + 1));
-			toReturn[x][y] = Color.RED;
-
-			s = s.substring(s.indexOf(")") + 1);
-		} while(s.length() > 0);
-
-		return toReturn;
-	}
 
 	/**
 	 * Set this grid use the supplied Color[][] to display its colors.
@@ -227,7 +204,7 @@ public class Grid extends JComponent {
 	 * @param size The size of the grid to create
 	 * @return The blank grid.
 	 */
-	private Color[][] makeBlankGrid(int size) {
+	public static Color[][] makeBlankGrid(int size) {
 		Color[][] toReturn = new Color[size][size];
 
 		for (int i = 0; i < size; i++) {
@@ -237,5 +214,73 @@ public class Grid extends JComponent {
 		}
 
 		return toReturn;
+	}
+
+	/**
+	 * Parse the grid layout saved by coordDump() into a Color array that represents the grid.
+	 * @param s The parsed string
+	 * @return A Color array to be used to set a Grid.
+	 */
+	public static Color[][] parseCoordDump(String s) {
+		int size = Integer.parseInt(s.substring(s.indexOf(":") + 1, s.indexOf("|")));
+		Color[][] toReturn = new Color[size][size];
+
+		//initialize
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				toReturn[i][j] = Color.WHITE;
+			}
+		}
+
+		do {
+			String point = s.substring(s.indexOf("(") + 1, s.indexOf(")")); //x,y
+			int x = Integer.parseInt(point.substring(0, point.indexOf(",")));
+			int y = Integer.parseInt(point.substring(point.indexOf(",") + 1));
+			toReturn[x][y] = Color.RED;
+
+			s = s.substring(s.indexOf(")") + 1);
+		} while(s.length() > 0);
+
+		return toReturn;
+	}
+
+	/**
+	 * Reads a saved grid stored in a file.
+	 * Example filename: "letters/a.txt"
+	 * @param filename The filename of the grid
+	 * @return The grid found in the file
+	 * @throws IOException If file is not found
+	 */
+	public static Color[][] readGrid(String filename) throws IOException {		
+		BufferedReader br = new BufferedReader(new FileReader(filename));
+		String dmp = br.readLine();
+
+		br.close();
+
+		return Grid.parseCoordDump(dmp);
+	}
+
+	/**
+	 * Prints a grid in a more readable format.
+	 * Format: "(x, y):{color}" where color is either W (white) or R (red)
+	 * @param grid The grid to read
+	 * @return The string representation
+	 */
+	public static String readGrid(Color[][] grid) {
+		String toReturn = "";
+		int size = grid.length;
+
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				toReturn += "(" + i + ", " + j + "):" +
+						(grid[i][j] == Color.RED ? "R" : "W") + " ";
+			}
+		}
+
+		return toReturn;
+	}
+
+	public String toString() {
+		return Grid.readGrid(squares);
 	}
 }
