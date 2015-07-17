@@ -10,10 +10,14 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class LetterRecorder {
+/**
+ * Tool for saving custom Grid layouts to files, in a format able to be loaded on demand.
+ * @author Reed
+ */
+public class GridRecorder {
 	public static void main(String[] args) {
 		try {
-			new LetterRecorder().init();
+			new GridRecorder().init();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

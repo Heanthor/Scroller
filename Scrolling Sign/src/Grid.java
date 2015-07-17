@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -282,5 +283,12 @@ public class Grid extends JComponent {
 
 	public String toString() {
 		return Grid.readGrid(squares);
+	}
+
+	/**
+	 * Immediately repaints the Grid.
+	 */
+	public void forceRepaint() {
+		this.paintImmediately(new Rectangle(size * squarePixelSize, size * squarePixelSize));
 	}
 }

@@ -16,6 +16,7 @@ public class ColorGridTest {
 		new ColorGridTest().init();
 	}
 
+	@SuppressWarnings("unused")
 	private void init() {
 		JFrame f = new JFrame("Color Squares Done the Right Way");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

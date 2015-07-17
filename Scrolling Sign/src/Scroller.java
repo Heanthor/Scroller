@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -16,6 +15,7 @@ import javax.swing.JTextField;
 
 public class Scroller {
 	private boolean debug = false;
+	private final int SCROLL_TICK = 1000;
 
 	public static void main(String[] args) {
 		new Scroller().init();
@@ -35,11 +35,17 @@ public class Scroller {
 		s.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					scroll(g, tf.getText().trim());
-				} catch (IOException e) {
-					tf.setText("File not found");
-				}
+				//Asynchronous since repaints and sleeps are done in a loop
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							scroll(g, tf.getText().trim());
+						} catch (IOException e) {
+							tf.setText("File not found");
+						}
+					}
+				}).start();
 				tf.setText("");
 			}
 		});
@@ -90,7 +96,7 @@ public class Scroller {
 			//Shift grid over
 			//The x coord is the only thing being changed here
 			//e.g. grid[x][y]
-			for (int shiftAmount = steps - 1; shiftAmount > 0; shiftAmount--) {
+			for (int shiftAmount = steps - 1; shiftAmount >= 0; shiftAmount--) {
 				Color[][] shiftedGrid = Grid.makeBlankGrid(steps);
 
 				//Shift all grid elements over by shiftAmount, unless they go out of bounds
@@ -109,8 +115,10 @@ public class Scroller {
 				}
 
 				try {
-					Thread.sleep(1000);
-					System.out.println("sleep");
+					Thread.sleep(SCROLL_TICK);
+					if (debug) {
+						System.out.println("sleep");
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
