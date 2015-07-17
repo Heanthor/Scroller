@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 
@@ -17,7 +19,7 @@ public class Grid extends JComponent {
 
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				squares[i][j] = Color.BLACK;
+				squares[i][j] = Color.WHITE;
 			}
 		}
 	}
@@ -32,7 +34,7 @@ public class Grid extends JComponent {
 
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				squares[i][j] = Color.BLACK;
+				squares[i][j] = Color.WHITE;
 			}
 		}
 	}
@@ -40,11 +42,23 @@ public class Grid extends JComponent {
 	public void paint(Graphics g) {
 		super.paint(g);
 
+		//Squares
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				g.setColor(squares[i][j]);
 				g.fillRect(i * squarePixelSize, j * squarePixelSize,
 						squarePixelSize, squarePixelSize);
+			}
+		}
+
+		//Lines
+		for (int i = 0; i < size; i++) {
+			g.setColor(Color.BLACK);
+			if (i != 0) {
+				g.drawLine(i * squarePixelSize, 0, i * squarePixelSize, squarePixelSize * size);
+			}
+			if (i != 0) {
+				g.drawLine(0, i * squarePixelSize, squarePixelSize * size, i * squarePixelSize);
 			}
 		}
 	}
@@ -83,9 +97,30 @@ public class Grid extends JComponent {
 				squares[i][j] = bgColor;
 			}
 		}
-		
+
 		this.repaint();
-		
+
 		return this;
+	}
+
+	public void toggle(int x, int y) {
+		if (squares[x][y] == Color.WHITE) {
+			squares[x][y] = Color.RED;
+		} else {
+			squares[x][y] = Color.WHITE;
+		}
+
+		this.repaint();
+	}
+
+	public int[] gridLocation(Point p) {
+		int[] container = new int[2];
+		container[0] = (p.x / squarePixelSize);
+		container[1] = (p.y / squarePixelSize);
+
+		System.out.println(p + " into [" + container[0] + ", " +
+				container[1] + "].");
+
+		return container;
 	}
 }
