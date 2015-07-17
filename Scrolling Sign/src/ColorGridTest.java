@@ -10,7 +10,6 @@ import javax.swing.*;
 /**
  * The actual way to draw a grid of colorful squares >.>
  * @author Reed
- *
  */
 public class ColorGridTest {
 	public static void main(String[] args) {
