@@ -75,56 +75,64 @@ public class Scroller {
 		//Grids that represent the letters to be printed
 		HashMap<Character, Color[][]> letterGrids = new HashMap<Character, Color[][]>();
 
+		int size = -1;
 		for (int i = 0; i < uniqueLetters.length; i++) {
+			Color [][] tmp = Grid.readGrid("letters/" + letters[i] + ".txt");
+
 			//Assume all letters are present on the same sized grid (which they should be)
-			letterGrids.put(uniqueLetters[i],  Grid.readGrid("letters/" + letters[i] + ".txt"));
+			if (size == -1) {
+				size = tmp.length;
+			}
+
+			letterGrids.put(uniqueLetters[i], tmp);
 		}
 
-		//This definitely isn't n^3 time, it's meant to be slow!
-		for (char letter: letters) { //debug line
-			Color[][] grid = letterGrids.get(letter);
-			//Color[][] grid = letterGrids.get("a"); //debug line
+		Color[][] grid = letterGrids.get(letter);
+		Color[][] strGrid = new Color[size * letters.length][size];
+		//Color[][] grid = letterGrids.get("a"); //debug line
 
-			//Debugging grid
-			if (str.equals("debug")) {
-				grid = Grid.readGrid("letters/debug.txt");
-				debug = true;
+		//Debugging grid
+		if (str.equals("debug")) {
+			grid = Grid.readGrid("letters/debug.txt");
+			debug = true;
+		}
+
+		int steps = grid.length; //Width of grid
+
+		/* Shift grid over
+		 *The x coord is the only thing being changed here
+		 *e.g. grid[x][y]
+		 *Each iteration waits for SCROLL_TICK before shifting again 
+		 */
+		for (int shiftAmount = steps - 1; shiftAmount >= 0; shiftAmount--) {
+			Color[][] shiftedGrid = Grid.makeBlankGrid(steps);
+
+			//Shift all grid elements over by shiftAmount, unless they go out of bounds
+			for (int x = 0; x < steps; x++) {
+				for (int y = 0; y < steps; y++) {
+					if (!(x + shiftAmount > steps - 1)) {
+						shiftedGrid[x + shiftAmount][y] = grid[x][y];
+					} //else out of bounds, not printed
+				}
 			}
 
-			int steps = grid.length; //Width of grid
+			g.setGrid(shiftedGrid);
 
-			//Shift grid over
-			//The x coord is the only thing being changed here
-			//e.g. grid[x][y]
-			for (int shiftAmount = steps - 1; shiftAmount >= 0; shiftAmount--) {
-				Color[][] shiftedGrid = Grid.makeBlankGrid(steps);
+			if (debug) {
+				System.out.println(Grid.readGrid(shiftedGrid));
+			}
 
-				//Shift all grid elements over by shiftAmount, unless they go out of bounds
-				for (int x = 0; x < steps; x++) {
-					for (int y = 0; y < steps; y++) {
-						if (!(x + shiftAmount > steps - 1)) {
-							shiftedGrid[x + shiftAmount][y] = grid[x][y];
-						} //else out of bounds, not printed
-					}
-				}
-
-				g.setGrid(shiftedGrid);
-
+			try {
+				Thread.sleep(SCROLL_TICK);
 				if (debug) {
-					System.out.println(Grid.readGrid(shiftedGrid));
+					System.out.println("sleep");
 				}
-
-				try {
-					Thread.sleep(SCROLL_TICK);
-					if (debug) {
-						System.out.println("sleep");
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		} //debug line
+		}
 
 		System.out.println();
 	}
 }
+

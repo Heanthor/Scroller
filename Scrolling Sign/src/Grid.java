@@ -234,12 +234,17 @@ public class Grid extends JComponent {
 		}
 
 		do {
-			String point = s.substring(s.indexOf("(") + 1, s.indexOf(")")); //x,y
-			int x = Integer.parseInt(point.substring(0, point.indexOf(",")));
-			int y = Integer.parseInt(point.substring(point.indexOf(",") + 1));
-			toReturn[x][y] = Color.RED;
+			try {
+				String point = s.substring(s.indexOf("(") + 1, s.indexOf(")")); //x,y
+				int x = Integer.parseInt(point.substring(0, point.indexOf(",")));
+				int y = Integer.parseInt(point.substring(point.indexOf(",") + 1));
+				toReturn[x][y] = Color.RED;
 
-			s = s.substring(s.indexOf(")") + 1);
+				s = s.substring(s.indexOf(")") + 1);
+			} catch (StringIndexOutOfBoundsException e) {
+				//Empty grid (or space character)
+				break;
+			}
 		} while(s.length() > 0);
 
 		return toReturn;
