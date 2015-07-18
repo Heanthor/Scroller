@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Scroller {
-	private boolean debug = false;
 	private final int SCROLL_TICK = 200;
 
 	public static void main(String[] args) {
@@ -79,7 +78,7 @@ public class Scroller {
 
 		int size = -1;
 		for (int i = 0; i < uniqueLetters.length; i++) {
-			Color [][] tmp = Grid.readGrid("letters/" + letters[i] + ".txt");
+			Color [][] tmp = Grid.readGrid("letters/" + uniqueLetters[i] + ".txt");
 
 			//Assume all letters are present on the same sized grid (which they should be)
 			if (size == -1) {
@@ -89,7 +88,6 @@ public class Scroller {
 			letterGrids.put(uniqueLetters[i], tmp);
 		}
 
-		//Color[][] grid = letterGrids.get("a"); //temp
 		Color[][] strGrid = new Color[size * letters.length][size];
 
 		//Create grid of all letters in sequence
@@ -103,25 +101,19 @@ public class Scroller {
 				longGridSize++;
 			}
 		}
-		//Color[][] grid = letterGrids.get("a"); //debug line
 
-		//Debugging grid
-		if (str.equals("debug")) {
-			//grid = Grid.readGrid("letters/debug.txt");
-			debug = true;
-		}
-
+		//ababcbab breaks it
 		/* Shift grid over
-		 *The x coord is the only thing being changed here
-		 *e.g. grid[x][y]
-		 *Each iteration waits for SCROLL_TICK before shifting again 
+		 * 	The x coord is the only thing being changed here
+		 * 	e.g. grid[x][y]
+		 * 	Each iteration waits for SCROLL_TICK before shifting again 
 		 */
-		for (int shiftAmount = longGridSize - 1; shiftAmount >= 0; shiftAmount--) {
+		for (int shiftAmount = -size - 1; shiftAmount <= strGrid.length; shiftAmount++) {
 			Color[][] shiftedGrid = Grid.makeBlankGrid(size);
-			//Shift all grid elements over by shiftAmount, unless they go out of bounds
+			//Shift long grid over by shiftAmount and print what overlaps with shiftedGrid
 			for (int x = 0; x < size; x++) {
 				for (int y = 0; y < size; y++) {
-					if (!(x + shiftAmount > strGrid.length - 1)) {
+					if (!(x + shiftAmount < 0 || x + shiftAmount > strGrid.length - 1)) {
 						shiftedGrid[x][y] = strGrid[x + shiftAmount][y];
 					} //else out of bounds, not printed
 				}
@@ -129,15 +121,8 @@ public class Scroller {
 
 			g.setGrid(shiftedGrid);
 
-			if (debug) {
-				System.out.println(Grid.readGrid(shiftedGrid));
-			}
-
 			try {
 				Thread.sleep(SCROLL_TICK);
-				if (debug) {
-					System.out.println("sleep");
-				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
