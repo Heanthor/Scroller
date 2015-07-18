@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class Scroller {
-	private final int SCROLL_TICK = 200;
+	private final int SCROLL_TICK = 100; //time between each scroll (ms)
 
 	public static void main(String[] args) {
 		new Scroller().init();
@@ -36,11 +36,12 @@ public class Scroller {
 			public void actionPerformed(ActionEvent arg0) {
 				if (!tf.getText().equals("")) {
 					//Asynchronous since repaints and sleeps are done in a loop
+					String text = tf.getText().trim();
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
 							try {
-								scroll(g, tf.getText().trim());
+								scroll(g, text);
 							} catch (IOException e) {
 								tf.setText("File not found");
 							}
