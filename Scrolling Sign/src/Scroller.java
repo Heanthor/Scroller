@@ -15,7 +15,7 @@ import javax.swing.JTextField;
 
 public class Scroller {
 	private boolean debug = false;
-	private final int SCROLL_TICK = 1000;
+	private final int SCROLL_TICK = 200;
 
 	public static void main(String[] args) {
 		new Scroller().init();
@@ -35,17 +35,19 @@ public class Scroller {
 		s.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				//Asynchronous since repaints and sleeps are done in a loop
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						try {
-							scroll(g, tf.getText().trim());
-						} catch (IOException e) {
-							tf.setText("File not found");
+				if (!tf.getText().equals("")) {
+					//Asynchronous since repaints and sleeps are done in a loop
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								scroll(g, tf.getText().trim());
+							} catch (IOException e) {
+								tf.setText("File not found");
+							}
 						}
-					}
-				}).start();
+					}).start();
+				}
 				tf.setText("");
 			}
 		});
@@ -87,31 +89,40 @@ public class Scroller {
 			letterGrids.put(uniqueLetters[i], tmp);
 		}
 
-		Color[][] grid = letterGrids.get(letter);
+		//Color[][] grid = letterGrids.get("a"); //temp
 		Color[][] strGrid = new Color[size * letters.length][size];
+
+		//Create grid of all letters in sequence
+		int longGridSize = 0; //pos in long array
+		for (char letter: letters) {
+			Color[][] tmp = letterGrids.get(letter); //less calls to get
+			for (int i = 0; i < size; i++) {
+				for (int j = 0; j < size; j++) {
+					strGrid[longGridSize][j] = tmp[i][j];
+				}
+				longGridSize++;
+			}
+		}
 		//Color[][] grid = letterGrids.get("a"); //debug line
 
 		//Debugging grid
 		if (str.equals("debug")) {
-			grid = Grid.readGrid("letters/debug.txt");
+			//grid = Grid.readGrid("letters/debug.txt");
 			debug = true;
 		}
-
-		int steps = grid.length; //Width of grid
 
 		/* Shift grid over
 		 *The x coord is the only thing being changed here
 		 *e.g. grid[x][y]
 		 *Each iteration waits for SCROLL_TICK before shifting again 
 		 */
-		for (int shiftAmount = steps - 1; shiftAmount >= 0; shiftAmount--) {
-			Color[][] shiftedGrid = Grid.makeBlankGrid(steps);
-
+		for (int shiftAmount = longGridSize - 1; shiftAmount >= 0; shiftAmount--) {
+			Color[][] shiftedGrid = Grid.makeBlankGrid(size);
 			//Shift all grid elements over by shiftAmount, unless they go out of bounds
-			for (int x = 0; x < steps; x++) {
-				for (int y = 0; y < steps; y++) {
-					if (!(x + shiftAmount > steps - 1)) {
-						shiftedGrid[x + shiftAmount][y] = grid[x][y];
+			for (int x = 0; x < size; x++) {
+				for (int y = 0; y < size; y++) {
+					if (!(x + shiftAmount > strGrid.length - 1)) {
+						shiftedGrid[x][y] = strGrid[x + shiftAmount][y];
 					} //else out of bounds, not printed
 				}
 			}
@@ -131,8 +142,7 @@ public class Scroller {
 				e.printStackTrace();
 			}
 		}
-
-		System.out.println();
+		//System.out.println();
 	}
 }
 
