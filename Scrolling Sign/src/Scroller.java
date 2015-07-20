@@ -79,7 +79,17 @@ public class Scroller {
 
 		int size = -1;
 		for (int i = 0; i < uniqueLetters.length; i++) {
-			Color [][] tmp = Grid.readGrid("letters/" + uniqueLetters[i] + ".txt");
+			String tmpCh = "" + uniqueLetters[i];
+			
+			//Special letter cases
+			if (tmpCh.equals(" ")) {
+				tmpCh = "spc"; //space filename
+			}
+			if (tmpCh.equals("?")) {
+				tmpCh = "qm";
+			}
+			
+			Color [][] tmp = Grid.readGrid("letters/" + tmpCh + ".txt");
 
 			//Assume all letters are present on the same sized grid (which they should be)
 			if (size == -1) {
