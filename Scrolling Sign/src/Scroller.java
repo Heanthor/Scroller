@@ -17,13 +17,14 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class Scroller {
-	private int SCROLL_TICK = 224; //time between each scroll (ms)
-	private boolean working = false;
+	private int scrollTick = 224; //time between each scroll (ms) changed by slider
+	private boolean working = false; //Prevent multiple scrolls at once
 
 	public static void main(String[] args) {
 		new Scroller().init();
 	}
 
+	@SuppressWarnings("unused")
 	private void init() {
 		JFrame f = new JFrame("Scroller");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,7 +38,7 @@ public class Scroller {
 		sli.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent arg0) {
-				SCROLL_TICK = (100 - sli.getValue()) * 4;
+				scrollTick = (100 - sli.getValue()) * 4;
 			}
 		});
 
@@ -151,7 +152,7 @@ public class Scroller {
 			g.setGrid(shiftedGrid);
 
 			try {
-				Thread.sleep(SCROLL_TICK);
+				Thread.sleep(scrollTick);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

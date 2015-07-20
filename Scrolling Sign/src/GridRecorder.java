@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -6,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.io.*;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -15,6 +17,8 @@ import javax.swing.JTextField;
  * @author Reed
  */
 public class GridRecorder {
+	private Color drawColor = Color.RED;
+
 	public static void main(String[] args) {
 		try {
 			new GridRecorder().init();
@@ -23,6 +27,7 @@ public class GridRecorder {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void init() throws IOException {
 		JFrame f = new JFrame("Letter Recorder");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,7 +39,7 @@ public class GridRecorder {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				int[] loc = g.gridLocation(arg0.getPoint());
-				g.toggle(loc[0], loc[1]);
+				g.toggle(loc[0], loc[1], drawColor);
 			}
 
 			@Override
@@ -53,6 +58,40 @@ public class GridRecorder {
 		//not confusing at all
 		f.getContentPane().add(g);
 		JPanel p = new JPanel();
+
+		String[] colors = {"Red", "Orange", "Yellow", "Green", "Blue", "Violet"};
+		JComboBox<String> c = new JComboBox<String>(colors);
+		c.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				@SuppressWarnings("unchecked")
+				JComboBox<String> parent = (JComboBox<String>) arg0.getSource();
+				String color = (String)parent.getSelectedItem();
+				System.out.println(color);
+				drawColor = map(color);
+			}
+
+			private Color map(String color) {
+				switch (color) {
+				case "Red":
+					return Color.RED;
+				case "Orange":
+					return Color.ORANGE;
+				case "Yellow":
+					return Color.YELLOW;
+				case "Green":
+					return Color.GREEN;
+				case "Blue":
+					return Color.BLUE;
+				case "Violet":
+					return Color.MAGENTA;
+				default:
+					return Color.RED;
+				}
+			}
+		});
+		p.add(c);
+
 		JTextField tf = new JTextField(10);
 		JButton r = new JButton("Reset");
 		r.addActionListener(new ActionListener() {
