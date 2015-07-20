@@ -107,6 +107,9 @@ public class Scroller {
 			if (tmpCh.equals("?")) {
 				tmpCh = "qm";
 			}
+			if (tmpCh.equals("|")) {
+				tmpCh = "flag";
+			}
 
 			Color [][] tmp = Grid.readGrid("letters/" + tmpCh + ".txt");
 

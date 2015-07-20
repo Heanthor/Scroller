@@ -76,15 +76,15 @@ public class GridRecorder {
 				case "Red":
 					return Color.RED;
 				case "Orange":
-					return Color.ORANGE;
+					return new Color(0xCD950C);
 				case "Yellow":
 					return Color.YELLOW;
 				case "Green":
-					return Color.GREEN;
+					return new Color(0x55AE3A);
 				case "Blue":
 					return Color.BLUE;
 				case "Violet":
-					return Color.MAGENTA;
+					return new Color(0x4B0082);
 				default:
 					return Color.RED;
 				}

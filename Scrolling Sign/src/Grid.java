@@ -182,7 +182,8 @@ public class Grid extends JComponent {
 	}
 
 	/**
-	 * Toggles the color located at point x, y. Red if white, white if red.
+	 * Toggles the color located at point x, y.
+	 *  Paints specified color, or white if otherwise.
 	 * @param x - x coordinate
 	 * @param y - y coordinate
 	 * @param color - Color to draw with
