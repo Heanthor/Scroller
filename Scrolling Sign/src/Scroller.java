@@ -9,6 +9,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -19,6 +20,7 @@ import javax.swing.event.ChangeListener;
 public class Scroller {
 	private int scrollTick = 224; //time between each scroll (ms) changed by slider
 	private boolean working = false; //Prevent multiple scrolls at once
+	private boolean loop = false; //Loop button
 
 	public static void main(String[] args) {
 		new Scroller().init();
@@ -44,28 +46,44 @@ public class Scroller {
 
 		JTextField tf = new JTextField(10);
 		JButton s = new JButton("Scroll");
+		JCheckBox b = new JCheckBox("Loop");
 		s.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (!tf.getText().equals("") && !working) {
-					//Asynchronous since repaints and sleeps are done in a loop
-					String text = tf.getText().trim();
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								working = true;
-								s.setText("Scrolling...");
-								scroll(g, text);
-								working = false;
-								s.setText("Scroll");
-							} catch (IOException e) {
-								tf.setText("File not found");
-								working = false;
+				if (loop) {
+					//Button has "stop" text here, stop the loop
+					loop = false;
+					working = false;
+					s.setText("Scroll");
+					b.setSelected(false);
+				} else {
+					if (!tf.getText().equals("") && !working) {
+						//Asynchronous since repaints and sleeps are done in a loop
+						String text = tf.getText().trim();
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									if (b.isSelected()) { //Loop
+										s.setText("Stop");
+										loop = true;
+										working = true;
+										loop(g, text);
+									} else {
+										working = true;
+										s.setText("Scrolling...");
+										scroll(g, text);
+										working = false;
+										s.setText("Scroll");
+									}
+								} catch (IOException e) {
+									tf.setText("File not found");
+									working = false;
+								}
 							}
-						}
-					}).start();
-					tf.setText("");
+						}).start();
+						tf.setText("");
+					}
 				}
 			}
 		});
@@ -73,6 +91,7 @@ public class Scroller {
 		p.add(sli);
 		p.add(s);
 		p.add(tf);
+		p.add(b);
 
 		f.getContentPane().add(p, BorderLayout.SOUTH);
 		f.getContentPane().add(g);
@@ -135,7 +154,6 @@ public class Scroller {
 			}
 		}
 
-		//ababcbab breaks it
 		/* Shift grid over
 		 * 	The x coord is the only thing being changed here
 		 * 	e.g. grid[x][y]
@@ -162,5 +180,14 @@ public class Scroller {
 		}
 		//System.out.println();
 	}
-}
 
+	private void loop(Grid g, String s) {
+		while (loop) {
+			try {
+				scroll(g, s);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}
