@@ -11,10 +11,13 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class Scroller {
-	private final int SCROLL_TICK = 100; //time between each scroll (ms)
+	private int SCROLL_TICK = 224; //time between each scroll (ms)
 	private boolean working = false;
 
 	public static void main(String[] args) {
@@ -30,6 +33,14 @@ public class Scroller {
 		Grid g = new Grid(gridSize = 10, squareSize = 50);
 
 		JPanel p = new JPanel();
+		JSlider sli = new JSlider(1, 90);
+		sli.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				SCROLL_TICK = (100 - sli.getValue()) * 4;
+			}
+		});
+
 		JTextField tf = new JTextField(10);
 		JButton s = new JButton("Scroll");
 		s.addActionListener(new ActionListener() {
@@ -49,6 +60,7 @@ public class Scroller {
 								s.setText("Scroll");
 							} catch (IOException e) {
 								tf.setText("File not found");
+								working = false;
 							}
 						}
 					}).start();
@@ -57,6 +69,7 @@ public class Scroller {
 			}
 		});
 
+		p.add(sli);
 		p.add(s);
 		p.add(tf);
 
