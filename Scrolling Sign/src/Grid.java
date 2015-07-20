@@ -3,11 +3,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  * A grid of squares, represented by a Color[][].
@@ -20,24 +24,18 @@ public class Grid extends JComponent {
 	private Color[][] squares;
 	private int size = 10;
 	private int squarePixelSize = 50;
+	private int width = 50;
+	private int height = 50;
 
 	public Grid() {
-		squares = new Color[size][size];
-		this.setPreferredSize(new Dimension
-				(squarePixelSize * size, squarePixelSize * size));
-
-		squares = makeBlankGrid(size);
+		init();
 	}
 
 	public Grid(int size, int squarePixelSize) {
 		this.size = size;
 		this.squarePixelSize = squarePixelSize;
 
-		squares = new Color[size][size];
-		this.setPreferredSize(new Dimension
-				(squarePixelSize * size, squarePixelSize * size));
-
-		squares = makeBlankGrid(size);
+		init();
 	}
 
 	public Grid(Color[][] arr) {
@@ -48,6 +46,39 @@ public class Grid extends JComponent {
 				(squarePixelSize * size, squarePixelSize * size));
 	}
 
+	private void init() {
+		squares = new Color[size][size];
+		this.setPreferredSize(new Dimension
+				(squarePixelSize * size, squarePixelSize * size));
+
+		squares = makeBlankGrid(size);
+
+		this.addComponentListener(new ComponentListener() {
+			@Override
+			public void componentHidden(ComponentEvent arg0) {
+			}
+
+			@Override
+			public void componentMoved(ComponentEvent arg0) {
+			}
+
+			@Override
+			public void componentResized(ComponentEvent arg0) {
+				JFrame f = (JFrame) SwingUtilities.getRoot(arg0.getComponent());
+				
+				int gridHeight = arg0.getComponent().getHeight();
+				int gridWidth = arg0.getComponent().getWidth();
+
+				height = gridHeight / size;
+				width = gridWidth / size;
+			}
+
+			@Override
+			public void componentShown(ComponentEvent arg0) {
+			}
+		});
+	}
+
 	public void paint(Graphics g) {
 		super.paint(g);
 
@@ -55,8 +86,8 @@ public class Grid extends JComponent {
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
 				g.setColor(squares[i][j]);
-				g.fillRect(i * squarePixelSize, j * squarePixelSize,
-						squarePixelSize, squarePixelSize);
+				g.fillRect(i * width, j * height,
+						width, height);
 			}
 		}
 
@@ -64,10 +95,12 @@ public class Grid extends JComponent {
 		for (int i = 0; i < size; i++) {
 			g.setColor(Color.BLACK);
 			if (i != 0) {
-				g.drawLine(i * squarePixelSize, 0, i * squarePixelSize, squarePixelSize * size);
+				//vertical
+				g.drawLine(i * width, 0, i * width, height * size);
 			}
 			if (i != 0) {
-				g.drawLine(0, i * squarePixelSize, squarePixelSize * size, i * squarePixelSize);
+				//horizontal
+				g.drawLine(0, i * height, width * size, i * height);
 			}
 		}
 	}
