@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 
 public class Scroller {
 	private final int SCROLL_TICK = 100; //time between each scroll (ms)
+	private boolean working = false;
 
 	public static void main(String[] args) {
 		new Scroller().init();
@@ -34,21 +35,25 @@ public class Scroller {
 		s.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				if (!tf.getText().equals("")) {
+				if (!tf.getText().equals("") && !working) {
 					//Asynchronous since repaints and sleeps are done in a loop
 					String text = tf.getText().trim();
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
 							try {
+								working = true;
+								s.setText("Scrolling...");
 								scroll(g, text);
+								working = false;
+								s.setText("Scroll");
 							} catch (IOException e) {
 								tf.setText("File not found");
 							}
 						}
 					}).start();
+					tf.setText("");
 				}
-				tf.setText("");
 			}
 		});
 
@@ -80,7 +85,7 @@ public class Scroller {
 		int size = -1;
 		for (int i = 0; i < uniqueLetters.length; i++) {
 			String tmpCh = "" + uniqueLetters[i];
-			
+
 			//Special letter cases
 			if (tmpCh.equals(" ")) {
 				tmpCh = "spc"; //space filename
@@ -88,7 +93,7 @@ public class Scroller {
 			if (tmpCh.equals("?")) {
 				tmpCh = "qm";
 			}
-			
+
 			Color [][] tmp = Grid.readGrid("letters/" + tmpCh + ".txt");
 
 			//Assume all letters are present on the same sized grid (which they should be)
