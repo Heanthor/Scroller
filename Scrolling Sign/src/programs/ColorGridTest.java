@@ -1,3 +1,4 @@
+package programs;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -6,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 
 import javax.swing.*;
+
+import grid.Grid;
 
 /**
  * The actual way to draw a grid of colorful squares >.>
@@ -24,7 +27,7 @@ public class ColorGridTest {
 
 		int gridSize, squareSize;
 
-		Grid g = new Grid(gridSize = 10, squareSize = 50);
+		Grid g = new Grid(gridSize = 10, squareSize = 50, true);
 		//g.drawRect(5, 3, Color.BLUE).drawRect(4, 3, Color.RED);
 
 		drawRandomRectangles(g, gridSize);

@@ -1,3 +1,4 @@
+package grid;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -18,6 +19,7 @@ import javax.swing.JComponent;
  */
 public class Grid extends JComponent {
 	private static final long serialVersionUID = 2892865424401791072L;
+	private boolean lines = true; //Draw grid lines
 	private Color[][] squares;
 	private int size = 10;
 	private int width = 50;
@@ -35,10 +37,11 @@ public class Grid extends JComponent {
 	 * @param size - The number of rows and cols.
 	 * @param squarePixelSize - The width and height of each cell.
 	 */
-	public Grid(int size, int squarePixelSize) {
+	public Grid(int size, int squarePixelSize, boolean lines) {
 		this.size = size;
 		this.width = squarePixelSize;
 		this.height = squarePixelSize;
+		this.lines = lines;
 
 		init();
 	}
@@ -49,10 +52,11 @@ public class Grid extends JComponent {
 	 * @param width - The width of each cell.
 	 * @param height - The height of each cell.
 	 */
-	public Grid(int size, int width, int height) {
+	public Grid(int size, int width, int height, boolean lines) {
 		this.size = size;
 		this.width = width;
 		this.height = height;
+		this.lines = lines;
 
 		init();
 	}
@@ -62,8 +66,9 @@ public class Grid extends JComponent {
 	 * and height of the Grid are conserved.
 	 * @param arr - The grid to set.
 	 */
-	public Grid(Color[][] arr) {
+	public Grid(Color[][] arr, boolean lines) {
 		int size = arr.length;
+		this.lines = lines;
 
 		squares = arr;
 		this.setPreferredSize(new Dimension
@@ -115,16 +120,18 @@ public class Grid extends JComponent {
 			}
 		}
 
-		//Lines
-		for (int i = 0; i < size; i++) {
-			g.setColor(Color.BLACK);
-			if (i != 0) {
-				//vertical
-				g.drawLine(i * width, 0, i * width, height * size);
-			}
-			if (i != 0) {
-				//horizontal
-				g.drawLine(0, i * height, width * size, i * height);
+		if (lines) {
+			//Lines
+			for (int i = 0; i < size; i++) {
+				g.setColor(Color.BLACK);
+				if (i != 0) {
+					//vertical
+					g.drawLine(i * width, 0, i * width, height * size);
+				}
+				if (i != 0) {
+					//horizontal
+					g.drawLine(0, i * height, width * size, i * height);
+				}
 			}
 		}
 	}

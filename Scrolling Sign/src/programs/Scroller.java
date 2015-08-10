@@ -1,3 +1,4 @@
+package programs;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -17,6 +18,8 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import grid.Grid;
+
 public class Scroller {
 	private int scrollTick = 224; //time between each scroll (ms) changed by slider
 	private boolean working = false; //Prevent multiple scrolls at once
@@ -33,7 +36,7 @@ public class Scroller {
 		f.setLocation(50, 50);
 
 		int gridSize, squareSize;
-		Grid g = new Grid(gridSize = 10, squareSize = 50);
+		Grid g = new Grid(gridSize = 10, squareSize = 50, true);
 
 		JPanel p = new JPanel();
 		JSlider sli = new JSlider(1, 90);

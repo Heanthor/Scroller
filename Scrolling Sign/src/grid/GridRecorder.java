@@ -1,3 +1,4 @@
+package grid;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -34,7 +35,7 @@ public class GridRecorder {
 		f.setLocation(50, 50);
 
 		int gridSize, squareSize;
-		Grid g = new Grid(gridSize = 10, squareSize = 50);
+		Grid g = new Grid(gridSize = 10, squareSize = 50, true);
 		g.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
