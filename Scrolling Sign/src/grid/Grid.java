@@ -19,11 +19,17 @@ import javax.swing.JComponent;
  */
 public class Grid extends JComponent {
 	private static final long serialVersionUID = 2892865424401791072L;
+	private static final Color BACKGROUND = Color.WHITE;
 	private boolean lines = true; //Draw grid lines
 	private Color[][] squares;
 	private int size = 10;
 	private int width = 50;
 	private int height = 50;
+
+	//Colors that look better than defaults
+	public static final Color ORANGE = new Color(0xCD950C);
+	public static final Color GREEN = new Color(0x55AE3A);
+	public static final Color VIOLET = new Color(0x4B0082);
 
 	/**
 	 * Creates a new grid with 10 rows and cols, with square pixel sizes of 50.
@@ -164,6 +170,22 @@ public class Grid extends JComponent {
 	}
 
 	/**
+	 * Fills this grid with a given color, making every cell this color.
+	 * @param color - Color to fill with
+	 * @return the current object
+	 */
+	public Grid fill(Color color) {
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				squares[i][j] = color;
+			}
+		}
+		this.repaint();
+
+		return this;
+	}
+
+	/**
 	 * Clears the grid.
 	 * @param bgColor - Color to set the grid to.
 	 * @return the current object
@@ -184,7 +206,7 @@ public class Grid extends JComponent {
 	 * @return the current object
 	 */
 	public Grid clearGrid() {
-		clearGrid(Color.WHITE);
+		clearGrid(Grid.BACKGROUND);
 		return this;
 	}
 
@@ -196,10 +218,10 @@ public class Grid extends JComponent {
 	 * @param color - Color to draw with
 	 */
 	public void toggle(int x, int y, Color color) {
-		if (squares[x][y] == Color.WHITE) {
+		if (squares[x][y] == Grid.BACKGROUND) {
 			drawRect(x, y, color);
 		} else {
-			drawRect(x, y, Color.WHITE);
+			drawRect(x, y, Grid.BACKGROUND);
 		}
 	}
 
@@ -229,7 +251,7 @@ public class Grid extends JComponent {
 
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				if (squares[i][j] != Color.WHITE) {
+				if (squares[i][j] != Grid.BACKGROUND) {
 					toReturn += "(" + i + "," + j + ")*" + squares[i][j].getRGB() + "/";
 				}
 			}
@@ -264,6 +286,10 @@ public class Grid extends JComponent {
 				(width * size, height * size));
 	}
 
+	public Color getBackgroundColor() {
+		return Grid.BACKGROUND;
+	}
+
 	/**
 	 * Creates a "blank" grid, e.g. all squares are White.
 	 * @param size The size of the grid to create
@@ -274,7 +300,7 @@ public class Grid extends JComponent {
 
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				toReturn[i][j] = Color.WHITE;
+				toReturn[i][j] = Grid.BACKGROUND;
 			}
 		}
 
@@ -293,7 +319,7 @@ public class Grid extends JComponent {
 		//initialize
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
-				toReturn[i][j] = Color.WHITE;
+				toReturn[i][j] = Grid.BACKGROUND;
 			}
 		}
 

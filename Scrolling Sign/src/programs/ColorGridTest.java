@@ -28,7 +28,6 @@ public class ColorGridTest {
 		int gridSize, squareSize;
 
 		Grid g = new Grid(gridSize = 10, squareSize = 50, true);
-		//g.drawRect(5, 3, Color.BLUE).drawRect(4, 3, Color.RED);
 
 		drawRandomRectangles(g, gridSize);
 
